@@ -62,13 +62,7 @@ public class KeyStoreManager {
         try {
             keyStore = KeyStore.getInstance(AndroidKeyStore);
             keyStore.load(null);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
+        } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException e) {
             e.printStackTrace();
         }
     }
@@ -177,11 +171,7 @@ public class KeyStoreManager {
             keyPairGenerator.initialize(spec);
             return keyPairGenerator.generateKeyPair();
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
         return null;
@@ -221,19 +211,7 @@ public class KeyStoreManager {
                 cipher.init(Cipher.DECRYPT_MODE, privateKey);
                 byte[] encryptedByte = Base64.decode(enseed, Base64.NO_WRAP);
                 return new String(cipher.doFinal(encryptedByte));
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (UnrecoverableEntryException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
+            } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
                 e.printStackTrace();
             }
 

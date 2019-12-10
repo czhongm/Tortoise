@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
 
 
 /**
@@ -25,12 +25,12 @@ public class SafeSpManager {
 
     public static Context appContext;
     private String spName;
-    private SecretKeySpec aesKey;
+    private SecretKey aesKey;
     private String aesKeyStr;
     private SharedPreferences mSetSp;
 
 
-    protected SafeSpManager(Context context, String spname, SecretKeySpec key, String strkey) {
+    protected SafeSpManager(Context context, String spname, SecretKey key, String strkey) {
         appContext = context.getApplicationContext();
         this.spName = spname;
         this.aesKey = key;
@@ -41,7 +41,7 @@ public class SafeSpManager {
 
         if (aesKey == null && !TextUtils.isEmpty(aesKeyStr)) {
             try {
-                this.aesKey = AESUtil.getAesKey(aesKeyStr);
+                this.aesKey = AESUtil.getRawKey(aesKeyStr.getBytes());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Key error, initialization failed");
@@ -57,7 +57,7 @@ public class SafeSpManager {
                 upOldData();
             } else {
                 //存的只是key的MD5值 用于识别是否是同一个Key
-                mSetSp.edit().putString(KEY_AES_MD5, MD5Util.bytes2Md5(aesKey.getEncoded())).commit();
+                mSetSp.edit().putString(KEY_AES_MD5, MD5Util.bytes2Md5(aesKey.getEncoded())).apply();
             }
 
         }
@@ -65,7 +65,7 @@ public class SafeSpManager {
     }
 
 
-    public static void turnInit(Context context, SecretKeySpec key) {
+    public static void turnInit(Context context, SecretKey key) {
         turnInit(context, null, key);
     }
 
@@ -74,7 +74,7 @@ public class SafeSpManager {
     }
 
 
-    public static void turnInit(Context context, String spname, SecretKeySpec key) {
+    public static void turnInit(Context context, String spname, SecretKey key) {
         if (context == null) {
             throw new NullPointerException("The context can not be Null！");
         }
@@ -143,13 +143,13 @@ public class SafeSpManager {
     }
 
     private boolean isOldData() {
-        return mSetSp.getAll().size() > 0 ? true : false;
+        return mSetSp.getAll().size() > 0;
     }
 
     private void upOldData() {
         Map<String, ?> oldData = mSetSp.getAll();
         Set<String> keys = oldData.keySet();
-        mSetSp.edit().clear().commit();
+        mSetSp.edit().clear().apply();
         SharedPreferences.Editor editor = mSetSp.edit();
         for (String key : keys) {
             editor.putString(MD5Util.str2Md5(key), AESUtil.encode(aesKey, oldData.get(key).toString
@@ -203,7 +203,7 @@ public class SafeSpManager {
         if (TextUtils.isEmpty(out)) {
             return def;
         } else {
-            return Integer.valueOf(out).intValue();
+            return Integer.valueOf(out);
         }
 
     }
@@ -218,7 +218,7 @@ public class SafeSpManager {
         if (TextUtils.isEmpty(out)) {
             return def;
         } else {
-            return Long.valueOf(out).longValue();
+            return Long.valueOf(out);
         }
     }
 
@@ -231,7 +231,7 @@ public class SafeSpManager {
         if (TextUtils.isEmpty(out)) {
             return def;
         } else {
-            return Float.valueOf(out).floatValue();
+            return Float.valueOf(out);
         }
     }
 
@@ -245,7 +245,7 @@ public class SafeSpManager {
         if (TextUtils.isEmpty(out)) {
             return def;
         } else {
-            return Boolean.valueOf(out).booleanValue();
+            return Boolean.valueOf(out);
         }
     }
 

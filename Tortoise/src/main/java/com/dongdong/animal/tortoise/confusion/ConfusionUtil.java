@@ -45,8 +45,7 @@ public class ConfusionUtil {
             int v = inArray[i] ^ vector;
             outArray[i] = (char) (v >> vector);
         }
-        String outStr = String.valueOf(outArray);
-        return outStr;
+        return String.valueOf(outArray);
     }
 
 
