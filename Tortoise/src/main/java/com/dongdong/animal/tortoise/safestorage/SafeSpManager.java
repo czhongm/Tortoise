@@ -273,5 +273,7 @@ public class SafeSpManager {
         }
     }
 
-
+    public void remove(String key){
+        mSetSp.edit().remove(MD5Util.str2Md5(key)).apply();
+    }
 }
