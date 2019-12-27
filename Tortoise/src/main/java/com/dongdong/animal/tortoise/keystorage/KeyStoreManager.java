@@ -229,7 +229,7 @@ public class KeyStoreManager {
      */
     private static boolean hasAlias(String alias) {
         try {
-            return keyStore != null && keyStore.containsAlias(alias);
+            return keyStore != null && keyStore.containsAlias(alias) && keyStore.getCertificate(alias) != null;
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
